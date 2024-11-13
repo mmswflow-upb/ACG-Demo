@@ -23,14 +23,31 @@
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SimpleFragmentShader.fragmentshader" />
-    <None Include="SimpleVertexShader.vertexshader" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\enemies\EarthBoss.png" />
+    <Image Include="assets\enemies\IceBoss.png" />
+    <Image Include="assets\enemies\LavaBoss.png" />
+    <Image Include="assets\main_character\MainHoldingGun.png" />
+    <Image Include="assets\main_character\MainWalkFirst.png" />
+    <Image Include="assets\main_character\MainWalkSecond.png" />
+    <Image Include="assets\projectiles\Bullet.png" />
+    <Image Include="assets\projectiles\Fireball.png" />
+    <Image Include="assets\projectiles\Fireblast.png" />
+    <Image Include="assets\projectiles\Iceshard.png" />
+    <Image Include="assets\scenes\EastScene.png" />
+    <Image Include="assets\scenes\MiddleScene.png" />
+    <Image Include="assets\scenes\NorthScene.png" />
+    <Image Include="assets\scenes\SouthScene.png" />
+    <Image Include="assets\scenes\WestScene.png" />
     <Image Include="opengl_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HealthBarFragmentShader.fragmentshader" />
+    <None Include="HealthBarVertexShader.vertexshader" />
+    <None Include="TexturedObjectFragmentShader.fragmentshader" />
+    <None Include="TexturedObjectVertexShader.vertexshader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}</ProjectGuid>
