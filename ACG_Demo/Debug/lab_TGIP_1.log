@@ -1,5 +1,5 @@
 ﻿          1 file(s) copied.
           1 file(s) copied.
   main.cpp
-C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(247,34): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(251,34): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   lab_TGIP_1.vcxproj -> C:\Users\Mario Sakka\Documents\ACG-Demo\Debug\ACG_Demo.exe
