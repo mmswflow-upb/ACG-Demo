@@ -1,14 +1,71 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Character.h">
+      <Filter>includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="opengl_background.png" />
+    <None Include="TexturedObjectFragmentShader.fragmentshader" />
+    <None Include="TexturedObjectVertexShader.vertexshader" />
+    <None Include="HealthBarVertexShader.vertexshader" />
+    <None Include="HealthBarFragmentShader.fragmentshader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="assets">
+      <UniqueIdentifier>{09a443ce-2de8-4bd0-8840-8ca64e9413df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\projectiles">
+      <UniqueIdentifier>{a2c5be9d-c37d-4dfb-9c56-552710f300d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\scenes">
+      <UniqueIdentifier>{02bea064-c3fe-4a38-b26b-d5a119102914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\enemies">
+      <UniqueIdentifier>{2d3da501-797e-41a7-9f19-30392829d455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\main_character">
+      <UniqueIdentifier>{35936840-73d3-4b6b-9341-37fb846261dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="includes">
+      <UniqueIdentifier>{127cccc5-feb8-4ebe-b91b-404f3b1690b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{f36de2d8-3ff8-4896-b353-e16771d2529c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\UpScene.png" />
+    <Image Include="assets\projectiles\Bullet.png">
+      <Filter>assets\projectiles</Filter>
+    </Image>
+    <Image Include="assets\projectiles\Fireball.png">
+      <Filter>assets\projectiles</Filter>
+    </Image>
+    <Image Include="assets\projectiles\Fireblast.png">
+      <Filter>assets\projectiles</Filter>
+    </Image>
+    <Image Include="assets\projectiles\Iceshard.png">
+      <Filter>assets\projectiles</Filter>
+    </Image>
     <Image Include="assets\scenes\EastScene.png">
       <Filter>assets\scenes</Filter>
     </Image>
@@ -24,27 +81,6 @@
     <Image Include="assets\scenes\WestScene.png">
       <Filter>assets\scenes</Filter>
     </Image>
-    <Image Include="assets\main_character\MainHoldingGun.png">
-      <Filter>assets\main_character</Filter>
-    </Image>
-    <Image Include="assets\main_character\MainWalkFirst.png">
-      <Filter>assets\main_character</Filter>
-    </Image>
-    <Image Include="assets\main_character\MainWalkSecond.png">
-      <Filter>assets\main_character</Filter>
-    </Image>
-    <Image Include="assets\projectiles\Bullet.png">
-      <Filter>assets\projectiles</Filter>
-    </Image>
-    <Image Include="assets\projectiles\Fireball.png">
-      <Filter>assets\projectiles</Filter>
-    </Image>
-    <Image Include="assets\projectiles\Fireblast.png">
-      <Filter>assets\projectiles</Filter>
-    </Image>
-    <Image Include="assets\projectiles\Iceshard.png">
-      <Filter>assets\projectiles</Filter>
-    </Image>
     <Image Include="assets\enemies\EarthBoss.png">
       <Filter>assets\enemies</Filter>
     </Image>
@@ -54,28 +90,14 @@
     <Image Include="assets\enemies\LavaBoss.png">
       <Filter>assets\enemies</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HealthBarFragmentShader.fragmentshader" />
-    <None Include="HealthBarVertexShader.vertexshader" />
-    <None Include="TexturedObjectFragmentShader.fragmentshader" />
-    <None Include="TexturedObjectVertexShader.vertexshader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="assets">
-      <UniqueIdentifier>{cef6b565-3edb-41a9-90fa-c1a360cfe5c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\scenes">
-      <UniqueIdentifier>{4bafd87e-0e9e-4f24-ba37-768cf9b83daf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\main_character">
-      <UniqueIdentifier>{e482e33f-98fa-4795-9efd-b412c76add4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\projectiles">
-      <UniqueIdentifier>{6a5abdc2-3561-4e4b-b23c-47dcaaf4f5fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\enemies">
-      <UniqueIdentifier>{c341be0a-01d8-448a-b836-40d833ced5d9}</UniqueIdentifier>
-    </Filter>
+    <Image Include="assets\main_character\MainHoldingGun.png">
+      <Filter>assets\main_character</Filter>
+    </Image>
+    <Image Include="assets\main_character\MainWalkFirst.png">
+      <Filter>assets\main_character</Filter>
+    </Image>
+    <Image Include="assets\main_character\MainWalkSecond.png">
+      <Filter>assets\main_character</Filter>
+    </Image>
   </ItemGroup>
 </Project>

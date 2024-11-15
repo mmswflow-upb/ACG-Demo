@@ -2,21 +2,41 @@
 #include <stdlib.h>
 #include <iostream>
 
-// Include necessary libraries
+// Include OpenGL and GLM headers
 #include "dependente/glew/glew.h"
 #include "dependente/glfw/glfw3.h"
 #include "dependente/glm/glm.hpp"
 #include "dependente/glm/gtc/matrix_transform.hpp"
 #include "dependente/glm/gtc/type_ptr.hpp"
+#include "Character.h" // Contains Character class
+#include "Scene.h" // Contains Scene class
 #include "shader.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+// GLFW window
 GLFWwindow* window;
 const int width = 1024, height = 1024;
 
-// Global variables
+// Global variables for player stats and movement
+//glm::vec3 character_scaling(0.12f, 0.36f, 1.0f);  // Adjust scale if needed
+//glm::vec3 player_position(0.0f, -0.5f, 0.0f);    // Starting position
 
+float delta_time = 0.0f;
+float last_frame_time = 0.0f;
+const float moving_speed = 2.0f;  // Increase speed for more visible movement
+
+// Shader program and texture IDs
+GLuint programID, backgroundTexture;
+
+// VAO, VBO, and IBO for background
+GLuint backgroundVAO, backgroundVBO, backgroundIBO;
+
+// Global main character
+Character* mainCharacter;
+
+//Global scene
+Scene* scene;
 
 //Player stats
 
@@ -24,57 +44,6 @@ const glm::vec4 health_bar_background_color(0.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 health_bar_color(1.0f, 0.0f, 0.0f, 1.0f);
 
 int player_health = 50;
-const glm::vec3 character_scaling(0.12f, 0.36f, 1.0f);
-
-//Moving player
-
-float delta_time = 0.0f;
-float last_frame_time = 0.0f;
-const float moving_speed = 2.0f;
-
-glm::vec3 player_position(0.0f, -0.5f, 0.0f);
-float x_offset = 0.0f;
-float y_offset = 0.0f;
-
-
-// Callback to adjust the viewport on window resize
-void window_callback(GLFWwindow* window, int new_width, int new_height) {
-    glViewport(0, 0, new_width, new_height);
-}
-
-// Handles player movement input
-void handleKeyInput(GLFWwindow* window) {
-    GLuint d_key = glfwGetKey(window, GLFW_KEY_D);
-    GLuint a_key = glfwGetKey(window, GLFW_KEY_A);
-    GLuint w_key = glfwGetKey(window, GLFW_KEY_W);
-    GLuint s_key = glfwGetKey(window, GLFW_KEY_S);
-
-    // Move left and right
-    if (d_key == GLFW_PRESS && a_key != GLFW_PRESS) {
-        x_offset = moving_speed * delta_time;
-    }
-    else if (a_key == GLFW_PRESS && d_key != GLFW_PRESS) {
-        x_offset = -moving_speed * delta_time;
-    }
-    else {
-        x_offset = 0.0f;
-    }
-
-    // Move up or down
-    if (w_key == GLFW_PRESS && s_key != GLFW_PRESS) {
-        y_offset = moving_speed * delta_time;
-    }
-    else if (s_key == GLFW_PRESS && w_key != GLFW_PRESS) {
-        y_offset = -moving_speed * delta_time;
-    }
-    else {
-        y_offset = 0.0f;
-    }
-
-    // Update player position based on input
-    player_position.x += x_offset;
-    player_position.y += y_offset;
-}
 
 // Function to load textures
 GLuint loadTexture(const char* filePath) {
@@ -103,13 +72,60 @@ GLuint loadTexture(const char* filePath) {
     return textureID;
 }
 
+// Callback for window resizing
+void window_callback(GLFWwindow* window, int new_width, int new_height) {
+    glViewport(0, 0, new_width, new_height);
+}
+
+float x_offset = 0.0f;
+float y_offset = 0.0f;
+
+// Handle player movement input
+void handleKeyInput(GLFWwindow* window, Character* mainCharacter, Scene* scene) {
+    GLuint d_key = glfwGetKey(window, GLFW_KEY_D);
+    GLuint a_key = glfwGetKey(window, GLFW_KEY_A);
+    GLuint w_key = glfwGetKey(window, GLFW_KEY_W);
+    GLuint s_key = glfwGetKey(window, GLFW_KEY_S);
+
+    // Move left and right
+    if (d_key == GLFW_PRESS && a_key != GLFW_PRESS) {
+        x_offset = moving_speed * delta_time;
+    }
+    else if (a_key == GLFW_PRESS && d_key != GLFW_PRESS) {
+        x_offset = -moving_speed * delta_time;
+    }
+    else {
+        x_offset = 0.0f;
+    }
+
+    // Move up or down
+    if (w_key == GLFW_PRESS && s_key != GLFW_PRESS) {
+        y_offset = moving_speed * delta_time;
+    }
+    else if (s_key == GLFW_PRESS && w_key != GLFW_PRESS) {
+        y_offset = -moving_speed * delta_time;
+    }
+    else {
+        y_offset = 0.0f;
+    }
+
+    // Update mainCharacter's position based on input
+    mainCharacter->updatePosition(x_offset, y_offset);
+    /*mainCharacter->position.x += x_offset;
+    mainCharacter->position.y += y_offset;*/
+
+    scene->constrainToBoundaries(*mainCharacter);
+}
+
 int main(void) {
+    // Initialize GLFW
     if (!glfwInit()) {
         fprintf(stderr, "Failed to initialize GLFW\n");
         getchar();
         return -1;
     }
 
+    // Create window
     window = glfwCreateWindow(width, height, "Textured Scene with Character and Health Bar", NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.");
@@ -120,6 +136,10 @@ int main(void) {
 
     glfwMakeContextCurrent(window);
 
+    // Enable sticky keys for input handling
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+
+    // Initialize GLEW
     glewExperimental = true;
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
@@ -128,39 +148,32 @@ int main(void) {
         return -1;
     }
 
+    // Set viewport and clear color
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-    GLuint programID = LoadShaders("TexturedObjectVertexShader.vertexshader", "TexturedObjectFragmentShader.fragmentshader");
+    // Load shaders and textures
+    programID = LoadShaders("TexturedObjectVertexShader.vertexshader", "TexturedObjectFragmentShader.fragmentshader");
     GLuint healthBarProgramID = LoadShaders("HealthBarVertexShader.vertexshader", "HealthBarFragmentShader.fragmentshader");
+    //backgroundTexture = loadTexture("assets/MiddleScene.png");
 
-    // Vertex data for background
-    float backgroundVertices[] = {
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,  // top right
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-       -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
-       -1.0f,  1.0f, 0.0f, 0.0f, 1.0f   // top left
-    };
+    // Define boundaries for the scene
+    float boundaries[4] = { -0.9f, 0.9f, -0.72f, 0.72f };
 
-    // Vertex data for character
-    float characterVertices[] = {
-        0.5f,  0.25f, 0.0f,  1.0f, 1.0f,  // top right
-        0.5f, -0.25f, 0.0f,  1.0f, 0.0f,  // bottom right
-       -0.5f, -0.25f, 0.0f,  0.0f, 0.0f,  // bottom left
-       -0.5f,  0.25f, 0.0f,  0.0f, 1.0f   // top left
-    };
-
-
+    // Define background vertices and indices
+    //float backgroundVertices[] = {
+    //    1.0f,  1.0f, 0.0f, 1.0f, 1.0f,  // top right
+    //    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+    //   -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
+    //   -1.0f,  1.0f, 0.0f, 0.0f, 1.0f   // top left
+    //};
 
     unsigned int backgroundIndices[] = { 0, 1, 3, 1, 2, 3 };
-    unsigned int characterIndices[] = { 0, 1, 3, 1, 2, 3 };
+
     unsigned int healthBarIndices[] = { 0, 1, 3, 1, 2, 3 };
 
-    GLuint backgroundVBO, backgroundVAO, backgroundIBO;
-    GLuint characterVBO, characterVAO, characterIBO;
-
-    // Background setup
-    glGenVertexArrays(1, &backgroundVAO);
+    // Setup VAOs, VBOs, and IBOs for background
+    /*glGenVertexArrays(1, &backgroundVAO);
     glGenBuffers(1, &backgroundVBO);
     glGenBuffers(1, &backgroundIBO);
 
@@ -169,25 +182,22 @@ int main(void) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(backgroundVertices), backgroundVertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backgroundIndices), backgroundIndices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(1);*/
 
-    // Character setup
-    glGenVertexArrays(1, &characterVAO);
-    glGenBuffers(1, &characterVBO);
-    glGenBuffers(1, &characterIBO);
+    // Initialize the main character
+    mainCharacter = new Character("assets/main_character/MainHoldingGun.png", 50, 10, glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f));
+    /*std::vector<Character> enemies = {
+        Character("assets/EnemyCharacter.png", 30, 5, glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f)),
+        Character("assets/EnemyCharacter.png", 30, 5, glm::vec3(0.3f, -0.3f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f))
+    };*/
+    std::vector<Character> enemies;
 
-    glBindVertexArray(characterVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, characterVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(characterVertices), characterVertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, characterIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(characterIndices), characterIndices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // Initialize the global scene with the background image, boundaries, main character, and enemies
+    scene = new Scene("assets/scenes/MiddleScene.png", boundaries, enemies);
 
     // Health Bar Background setup
     GLuint healthBarBackgroundVAO, healthBarBackgroundVBO, healthBarBackgroundIBO;
@@ -231,55 +241,46 @@ int main(void) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // Load textures
-    GLuint backgroundTexture = loadTexture("assets/scenes/MiddleScene.png");
-    GLuint characterTexture = loadTexture("assets/main_character/MainHoldingGun.png");
-
-    glm::mat4 backgroundTransform = glm::mat4(1.0f);
-    glm::mat4 characterTransform = glm::translate(glm::mat4(1.0f), player_position);
-    characterTransform = glm::scale(characterTransform, character_scaling);
-
     glfwSetFramebufferSizeCallback(window, window_callback);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
+    // Main loop
     while (!glfwWindowShouldClose(window)) {
 
-        // Take into account different frame rates
+        // Calculate delta time
         float current_frame_time = glfwGetTime();
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
-        glfwSwapBuffers(window);
+        // Poll events and swap buffers
         glfwPollEvents();
+        glfwSwapBuffers(window);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        // Clear the screen
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Handle player input
-        handleKeyInput(window);
+        handleKeyInput(window, mainCharacter, scene);
 
         // Render Background
-        glUseProgram(programID);
+        /*glUseProgram(programID);
         glUniform1i(glGetUniformLocation(programID, "texture1"), 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-        glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(backgroundTransform));
+        glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
         glBindVertexArray(backgroundVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 
-        // Render Character
-        characterTransform = glm::translate(glm::mat4(1.0f), player_position); // Update position
-        characterTransform = glm::scale(characterTransform, character_scaling); // Scale character
+        // Render the Main Character with updated position
+        //glm::mat4 characterTransform = glm::translate(glm::mat4(1.0f), player_position);
+        //characterTransform = glm::scale(characterTransform, character_scaling);
 
-        glUniform1i(glGetUniformLocation(programID, "texture1"), 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, characterTexture);
-        glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(characterTransform));
-        glBindVertexArray(characterVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+        // Apply transformation matrix for the character
+        //glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(characterTransform));
+        scene->render(programID);
+        mainCharacter->render(programID); // Render the character with the shader program
         // Render Health Bar Background (black rectangle)
         glUseProgram(healthBarProgramID);
         unsigned int health_bar_color_loc = glGetUniformLocation(healthBarProgramID, "healthBarColor");
@@ -304,17 +305,18 @@ int main(void) {
         glBindVertexArray(0);
     }
 
+    // Cleanup
+    // Free the dynamically allocated main character
 
-    glDeleteBuffers(1, &backgroundVBO);
-    glDeleteBuffers(1, &characterVBO);
+    scene->cleanup();
+    mainCharacter->cleanup();
+
+    delete scene;
+    delete mainCharacter;
     glDeleteBuffers(1, &healthBarBackgroundVBO);
     glDeleteBuffers(1, &healthBarForegroundVBO);
-    glDeleteBuffers(1, &backgroundIBO);
-    glDeleteBuffers(1, &characterIBO);
     glDeleteBuffers(1, &healthBarBackgroundIBO);
     glDeleteBuffers(1, &healthBarForegroundIBO);
-    glDeleteVertexArrays(1, &backgroundVAO);
-    glDeleteVertexArrays(1, &characterVAO);
     glDeleteVertexArrays(1, &healthBarBackgroundVAO);
     glDeleteVertexArrays(1, &healthBarForegroundVAO);
 

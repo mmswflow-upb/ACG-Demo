@@ -19,10 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HealthBarFragmentShader.fragmentshader" />
+    <None Include="HealthBarVertexShader.vertexshader" />
+    <None Include="TexturedObjectFragmentShader.fragmentshader" />
+    <None Include="TexturedObjectVertexShader.vertexshader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -41,13 +51,7 @@
     <Image Include="assets\scenes\NorthScene.png" />
     <Image Include="assets\scenes\SouthScene.png" />
     <Image Include="assets\scenes\WestScene.png" />
-    <Image Include="opengl_background.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HealthBarFragmentShader.fragmentshader" />
-    <None Include="HealthBarVertexShader.vertexshader" />
-    <None Include="TexturedObjectFragmentShader.fragmentshader" />
-    <None Include="TexturedObjectVertexShader.vertexshader" />
+    <Image Include="assets\UpScene.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}</ProjectGuid>
