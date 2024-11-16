@@ -8,6 +8,7 @@
 #include "dependente/glm/glm.hpp"
 #include "dependente/glew/glew.h"
 #include "CharacterTexturePack.h"
+#include "Projectile.h"
 #include "CharacterType.h" // For CharacterType and EnemyAttributes
 
 class Character {
@@ -18,9 +19,12 @@ public:
     float lookAngle;
     float startingTime;
     float lastShotTime;
+    float fireRate;
     bool walking;
     char movementAxis;
     int health;
+    int damage;
+    ProjectileType projectileType;
     CharacterTexturePack texturePack;
 
     GLuint idleTextureID;
@@ -32,9 +36,10 @@ public:
     Character(CharacterType characterType, glm::vec3 position, glm::vec3 scaling, float lookAngle, float startingTime, bool walking);
     ~Character();
 
-    void render(GLuint programID, float time);
+    void render(GLuint programID, float time, float deltaTime);
     void updatePosition(float x_offset, float y_offset);
-    void enemyMovement(float time, glm::vec3& target, float deltaTime);
+    void enemyMovement(float time,glm::vec3 &target, std::vector<Projectile*>& projectilesInScene, float deltaTime);
+    void shoot(glm::vec3 target, std::vector<Projectile*>& projectilesInScene);
     glm::vec3 getPosition() const;
     void setPosition(const glm::vec3& newPosition);
 

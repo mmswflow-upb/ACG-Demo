@@ -105,12 +105,40 @@ void handleUserInput(GLFWwindow* window, float currentTime) {
         glfwSetWindowShouldClose(window, 1);
     }
 
+    // Check if player health is zero
+    if (mainCharacter->health <= 0) {
+        // Player health is zero, so skip movement and shooting logic
+        return;
+    }
+
     //Detecting clicks (for shooting)
     int mouse_left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 
     if (mouse_left_click == GLFW_PRESS) {
 
-        
+        // Check if enough time has passed since the last shot based on the fire rate (debounce)
+        if (mainCharacter->lastShotTime >= mainCharacter->fireRate) {
+            // Get the position of the cursor on the window
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+
+
+            // Get the normalized coordinates of the cursor on the window
+            float x_normalized = ((2.0f * xpos) / width) - 1.0f;
+            float y_normalized = 1.0f - ((2.0f * ypos) / height);
+
+            // Create target vector to which the projectile has to travel
+            glm::vec3 target(x_normalized, y_normalized, 0.0f);
+
+            // Call the shoot function with the target and projectiles vector
+            mainCharacter->shoot(target, scene->projectiles);
+
+            // Update the last shot time in the character
+            mainCharacter->lastShotTime = 0.0f;
+        }
+        mainCharacter->walking = false;
+        return;
+
     }
 
     //Moving character
@@ -157,6 +185,8 @@ void handleUserInput(GLFWwindow* window, float currentTime) {
     Scene* tempScene = scene->constrainToBoundaries(*mainCharacter);
     if (scene != tempScene) {
 
+        //Delete all projectiles from previous scene
+        scene->projectiles.clear();
         //Switch scenes
         scene = tempScene;
     }
@@ -204,13 +234,14 @@ int main(void) {
     // Load shaders and textures
     texturesProgramID = LoadShaders("TexturedObjectVertexShader.vertexshader", "TexturedObjectFragmentShader.fragmentshader");
     GLuint healthbarProgramID = LoadShaders("HealthbarVertexShader.vertexshader", "HealthbarFragmentShader.fragmentshader");
+    GLuint projectilesProgramID = LoadShaders("ProjectilesVertexShader.vertexshader", "ProjectilesFragmentShader.fragmentshader");
 
 
     unsigned int backgroundIndices[] = { 0, 1, 3, 1, 2, 3 };
 
     unsigned int healthBarIndices[] = { 0, 1, 3, 1, 2, 3 };
 
-
+   
     // Create main character (spawns in the south)
     mainCharacter = new Character(CharacterType::Main, glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 0.0f, glfwGetTime(), false);
 
@@ -218,11 +249,11 @@ int main(void) {
     Character* earthBoss = new Character(CharacterType::EarthBoss, glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 90.0f, glfwGetTime(), false);
     Character* iceBoss = new Character(CharacterType::IceBoss, glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 270.0f, glfwGetTime(), false);
     Character* lavaBoss = new Character(CharacterType::LavaBoss, glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 0.0f, glfwGetTime(), false);
-
+   
     std::vector<Character> enemies;
 
     //Initializing all scenes
-
+    
     // Define normalized boundaries based on the reference:
     // Format: {west, east, south, north}
     float centerBoundaries[4] = { -1.4f, 1.4f, -1.4f, 1.4f };    // Center scene
@@ -250,11 +281,11 @@ int main(void) {
     eastEnemies.push_back(*iceBoss);
 
     // Create five scenes with their respective background images and boundaries
-    centerScene = new Scene("assets/scenes/MiddleScene.png", centerBoundaries, std::vector<Character>());
-    northScene = new Scene("assets/scenes/NorthScene.png", northBoundaries, northEnemies);
+    centerScene= new Scene("assets/scenes/MiddleScene.png", centerBoundaries, std::vector<Character>());
+    northScene= new Scene("assets/scenes/NorthScene.png", northBoundaries, northEnemies);
     eastScene = new Scene("assets/scenes/EastScene.png", eastBoundaries, eastEnemies);
-    southScene = new Scene("assets/scenes/SouthScene.png", southBoundaries, std::vector<Character>());
-    westScene = new Scene("assets/scenes/WestScene.png", westBoundaries, westEnemies);
+    southScene= new Scene("assets/scenes/SouthScene.png", southBoundaries, std::vector<Character>());
+    westScene= new Scene("assets/scenes/WestScene.png", westBoundaries, westEnemies);
 
     // Set neighbors for each scene
     centerScene->setNeighbors(westScene, eastScene, southScene, northScene);
@@ -283,7 +314,7 @@ int main(void) {
     // Render health bar
     healthBar->render(healthbarProgramID);
 
-
+   
 
     glfwSetFramebufferSizeCallback(window, window_callback);
 
@@ -291,7 +322,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
 
         // Calculate delta time
-        float current_frame_time = (float)glfwGetTime();
+        float current_frame_time = (float) glfwGetTime();
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
@@ -306,8 +337,8 @@ int main(void) {
         // Handle player input
         handleUserInput(window, current_frame_time);
 
-        scene->render(texturesProgramID, current_frame_time, *mainCharacter, delta_time);
-        mainCharacter->render(texturesProgramID, current_frame_time); // Render the character with the shader program
+        scene->render(texturesProgramID, projectilesProgramID, current_frame_time, *mainCharacter, delta_time, healthBar);
+        mainCharacter->render(texturesProgramID, current_frame_time, delta_time); // Render the character with the shader program
 
         // Update health bar ratio
         healthBar->update(mainCharacter->health / 100.0f);
@@ -315,7 +346,7 @@ int main(void) {
         // Render health bar
         healthBar->render(healthbarProgramID);
 
-
+        
     }
 
     // Cleanup

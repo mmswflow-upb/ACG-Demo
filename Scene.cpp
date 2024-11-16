@@ -4,7 +4,7 @@
 #include <iostream>
 
 Scene::Scene(const std::string& backgroundPath, const float boundaryArray[4], const std::vector<Character>& enemyList)
-    : backgroundImagePath(backgroundPath), enemies(enemyList)
+    : backgroundImagePath(backgroundPath), enemies(enemyList), projectiles(std::vector<Projectile*>())
 {
     // Initialize boundaries
     for (int i = 0; i < 4; ++i) {
@@ -38,8 +38,13 @@ void Scene::setStartingPoints(float* west, float* east, float* south, float* nor
 
 }
 
-void Scene::render(GLuint texturesProgramID, float time, Character& mainCharacter, float deltaTime) {
+bool isProjectileCollidingWithCharacter(const glm::vec3& projectilePosition, const Character& character) {
+   
+    return false;
+}
 
+void Scene::render(GLuint texturesProgramID, GLuint projectilesProgramID, float time,Character &mainCharacter, float deltaTime, HealthBar* healthBar) {
+   
 
     glUseProgram(texturesProgramID);
     glUniform1i(glGetUniformLocation(texturesProgramID, "texture1"), 0);
@@ -51,11 +56,29 @@ void Scene::render(GLuint texturesProgramID, float time, Character& mainCharacte
 
     // Render each enemy in the scene
     for (Character& enemy : enemies) {
-        enemy.enemyMovement(time, mainCharacter.getPosition(), deltaTime);
-        enemy.render(texturesProgramID, time);  // Render each character with the character shader program
+        enemy.enemyMovement(time, mainCharacter.getPosition(), projectiles, deltaTime);
+        enemy.render(texturesProgramID, time, deltaTime);  // Render each character with the character shader program
     }
 
-   
+    
+
+    for (auto it = projectiles.begin(); it != projectiles.end(); ) {
+        (*it)->render(projectilesProgramID);
+        bool wentOutOfBounds = (*it)->updatePosition(deltaTime);
+
+        
+
+        // If the projectile went out of bounds
+        if (wentOutOfBounds) {
+            std::cout << ("Projectile went out of bounds\n\n");
+            delete* it;
+            it = projectiles.erase(it);
+        }
+        else {
+            ++it; // Only increment if not erased
+        }
+    }
+
 
 }
 

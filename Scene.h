@@ -8,13 +8,15 @@
 #include "Character.h"
 #include "dependente/glew/glew.h"
 #include "dependente/glm/glm.hpp"
+#include "Projectile.h"
+#include "Healthbar.h"
 
 class Scene {
 public:
     Scene(const std::string& backgroundPath, const float boundaryArray[4], const std::vector<Character>& enemyList);
     ~Scene();
     GLuint loadBackgroundTexture(const char* filePath);
-    void render(GLuint texturesProgramID, float time, Character& mainCharacter, float deltaTime);
+    void render(GLuint texturesProgramID, GLuint projectilesProgramID, float time, Character &mainCharacter, float deltaTime, HealthBar* healthBar);
     void setupBackground();
     Scene* constrainToBoundaries(Character& character);
 
@@ -24,6 +26,7 @@ public:
     //Method to set the points at which the player is teleported once they transition from one scene to another
     void setStartingPoints(float* west, float* east, float* south, float* north);
 
+    std::vector<Projectile*> projectiles;
 
 
 private:

@@ -1,0 +1,20 @@
+#version 330 core
+
+// Input vertex data
+layout(location = 0) in vec3 proj_vertexPos;
+layout(location = 1) in vec2 proj_texCoord;
+
+// Output texture coordinates to fragment shader
+out vec2 projFragTexCoord;
+
+// Transformation matrix uniform
+uniform mat4 proj_transform;
+
+void main() {
+ 
+
+
+	// Apply the transform on the gl_Position => final position of each vertex
+	gl_Position = proj_transform * vec4(proj_vertexPos, 1.0);
+
+}

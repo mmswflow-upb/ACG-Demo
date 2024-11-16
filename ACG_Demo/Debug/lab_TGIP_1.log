@@ -1,4 +1,19 @@
 ﻿          1 file(s) copied.
           1 file(s) copied.
+  Character.cpp
+  CharacterTexturePack.cpp
+  Healthbar.cpp
+  main.cpp
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(127,32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(128,32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(246,132): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(249,145): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(250,141): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(251,141): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(270,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Mario Sakka\Documents\ACG-Demo\main.cpp(271,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Projectile.cpp
   Scene.cpp
+  shader.cpp
+  Generating Code...
   lab_TGIP_1.vcxproj -> C:\Users\Mario Sakka\Documents\ACG-Demo\Debug\ACG_Demo.exe

@@ -23,12 +23,15 @@
     <ClCompile Include="CharacterTexturePack.cpp" />
     <ClCompile Include="Healthbar.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="HealthBarFragmentShader.fragmentshader" />
-    <None Include="HealthBarVertexShader.vertexshader" />
+    <None Include="HealthbarFragmentShader.fragmentshader" />
+    <None Include="HealthbarVertexShader.vertexshader" />
+    <None Include="ProjectilesFragmentShader.fragmentshader" />
+    <None Include="ProjectilesVertexShader.vertexshader" />
     <None Include="TexturedObjectFragmentShader.fragmentshader" />
     <None Include="TexturedObjectVertexShader.vertexshader" />
   </ItemGroup>
@@ -37,6 +40,8 @@
     <ClInclude Include="CharacterTexturePack.h" />
     <ClInclude Include="CharacterType.h" />
     <ClInclude Include="Healthbar.h" />
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileType.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>

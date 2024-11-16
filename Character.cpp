@@ -2,6 +2,7 @@
 #include "dependente/glm/gtc/matrix_transform.hpp"
 #include "dependente/glm/gtc/type_ptr.hpp"
 #include "stb_image.h"
+#include "ProjectileType.h" // For getProjectileAttributes
 #include <iostream>
 
 Character::Character(
@@ -15,9 +16,12 @@ Character::Character(
     // Load character attributes based on type
     CharacterAttributes attributes = getEnemyAttributes(characterType);
     health = attributes.maxHealth;
-    
+    damage = getProjectileAttributes(attributes.projectileType).damage;
+    projectileType = attributes.projectileType;
     texturePack = attributes.texturePack;
+    fireRate = attributes.fireRate;
     movementAxis = attributes.movementAxis;
+    lastShotTime = 0.0f;
     // Load textures once
     idleTextureID = loadTexture(texturePack.idleTexturePath.c_str());
     gunHoldingTextureID = loadTexture(texturePack.gunHoldingTexturePath.c_str());
@@ -28,7 +32,9 @@ Character::Character(
     setupCharacter();
 }
 
-void Character::render(GLuint programID, float time) {
+void Character::render(GLuint programID, float time, float deltaTime) {
+
+
     GLuint currentTextureID;
 
     // Alternate between walking textures if moving
@@ -39,6 +45,8 @@ void Character::render(GLuint programID, float time) {
     else {
         currentTextureID = idleTextureID;
     }
+    // Accumulate deltaTime to determine when to shoot
+    lastShotTime += deltaTime;
 
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, position);
@@ -62,24 +70,37 @@ void Character::updatePosition(float x_offset, float y_offset) {
     position.y += y_offset;
 }
 
-void Character::enemyMovement(float time, glm::vec3& target, float deltaTime) {
+void Character::enemyMovement(float time, glm::vec3& target, std::vector<Projectile*>& projectilesInScene, float deltaTime) {
     float movementRange = 0.8f;
     float speed = 0.5f;
 
+    // Move between -0.8 and 0.8 on x or y axis
     if (movementAxis == 'x') {
         position.x = movementRange * sin(speed * time);
     }
     else {
         position.y = movementRange * sin(speed * time);
-
     }
 
-    if (fmod(time, 2.0f) < 0.01f) {
+    
+
+    // Shoot when timeSinceLastShot meets or exceeds the fireRate
+    if (lastShotTime >= fireRate) {
+        shoot(target, projectilesInScene);
+        lastShotTime = 0.0f;  // Reset the timer after shooting
     }
 }
 
 
+void Character::shoot(glm::vec3 target, std::vector<Projectile*>& projectilesInScene) {
+  
 
+    Projectile* newProjectile = new Projectile(projectileType, position, target);
+    
+
+    projectilesInScene.push_back(newProjectile);
+
+}
 
 void Character::setupCharacter() {
     float characterVertices[] = {
