@@ -40,7 +40,52 @@ void Scene::setStartingPoints(float* west, float* east, float* south, float* nor
 
 bool isProjectileCollidingWithCharacter(const glm::vec3& projectilePosition, const Character& character) {
    
-    return false;
+
+    float left, right, bottom, top;
+
+    // Set hitbox values based on character type
+    switch (character.characterType) {
+    case CharacterType::Main:
+        left = character.position.x - 0.05f;
+        right = character.position.x + 0.05f;
+        bottom = character.position.y - 0.15f;
+        top = character.position.y + 0.15f;
+        break;
+
+    case CharacterType::IceBoss:
+        left = character.position.x - 0.45f;
+        right = character.position.x + 0.45f;
+        bottom = character.position.y - 0.1f;
+        top = character.position.y + 0.1f;
+        break;
+
+    case CharacterType::LavaBoss:
+        left = character.position.x - 0.14f;
+        right = character.position.x + 0.01f;
+        bottom = character.position.y - 0.35f;
+        top = character.position.y + 0.45f;
+        break;
+
+    case CharacterType::EarthBoss:
+        left = character.position.x - 0.45f;
+        right = character.position.x + 0.4f;
+        bottom = character.position.y - 0.1f;
+        top = character.position.y + 0.1f;
+        break;
+
+        // Add cases for additional enemy types as needed
+    default:
+        // Default hitbox size if character type is unrecognized
+        left = character.position.x - 0.25f;
+        right = character.position.x + 0.25f;
+        bottom = character.position.y - 0.45f;
+        top = character.position.y + 0.45f;
+        break;
+    }
+
+    // Check if projectile is within the hitbox boundaries
+    return (projectilePosition.x > left && projectilePosition.x < right &&
+        projectilePosition.y > bottom && projectilePosition.y < top);
 }
 
 void Scene::render(GLuint texturesProgramID, GLuint projectilesProgramID, float time,Character &mainCharacter, float deltaTime, HealthBar* healthBar) {
@@ -66,7 +111,52 @@ void Scene::render(GLuint texturesProgramID, GLuint projectilesProgramID, float 
         (*it)->render(projectilesProgramID);
         bool wentOutOfBounds = (*it)->updatePosition(deltaTime);
 
-        
+        // Handle collision with the player if the projectile is an enemy type
+        if ((*it)->projectileType == ProjectileType::Fireball ||
+            (*it)->projectileType == ProjectileType::Fireblast ||
+            (*it)->projectileType == ProjectileType::Iceshard) {
+
+            if (isProjectileCollidingWithCharacter((*it)->position, mainCharacter)) {
+
+                if (mainCharacter.health - (*it)->damage >= 0) {
+                    mainCharacter.health -= (*it)->damage;
+                }
+                else {
+                    mainCharacter.health = 0;
+                }
+                std::cout << "Character health after getting shot: " << mainCharacter.health << "\n";
+
+                healthBar->update(mainCharacter.health / 100.0f); // Update health bar
+
+                delete* it;
+                it = projectiles.erase(it);
+                continue; // Move to the next projectile after handling this one
+            }
+        }
+
+        // Handle collision with enemies if the projectile is the player's type
+        else if ((*it)->projectileType == ProjectileType::Bullet) {
+            bool enemyHit = false; // Flag to track if any enemy is hit
+            for (auto enemy = enemies.begin(); enemy != enemies.end(); ++enemy) {
+                if (isProjectileCollidingWithCharacter((*it)->position, *enemy)) {
+                    if (enemy->health - (*it)->damage >= 0) {
+                        enemy->health -= (*it)->damage;
+                    }
+                    else {
+                        enemy->health = 0;
+                        std::cout << "Enemy defeated\n";
+                        enemies.erase(enemy); // Remove enemy from the scene if defeated
+                    }
+                   
+
+                    delete* it;
+                    it = projectiles.erase(it); // Remove projectile after it hits an enemy
+                    enemyHit = true; // Set flag to true if an enemy is hit
+                    break; // Exit the enemy loop after the hit to prevent double collisions
+                }
+            }
+            if (enemyHit) continue; // Skip incrementing `it` if a projectile was erased
+        }
 
         // If the projectile went out of bounds
         if (wentOutOfBounds) {

@@ -46,14 +46,13 @@ bool Projectile::updatePosition(float deltaTime) {
     float speed = 2.0f;  // Speed of projectile
     position += direction * speed * deltaTime;
 
-    // Check if close enough to target
-    if (glm::length(target - position) <= 0.005f) {
-        position = target;  // Snap to target to avoid overshooting
-        return true;  // Mark for deletion
+
+    //// Check if the projectile went out of bounds
+    if (position.x < -1.0f || position.x > 1.0f ||
+        position.y < -1.0f || position.y > 1.0f) {
+        return true;
     }
     return false;
-
-    
 }
 
 void Projectile::setupProjectile() {

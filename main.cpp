@@ -108,6 +108,7 @@ void handleUserInput(GLFWwindow* window, float currentTime) {
     // Check if player health is zero
     if (mainCharacter->health <= 0) {
         // Player health is zero, so skip movement and shooting logic
+        mainCharacter->walking = false;
         return;
     }
 
