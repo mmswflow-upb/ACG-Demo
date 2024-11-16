@@ -13,21 +13,46 @@
     <ClCompile Include="Scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="CharacterTexturePack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Healthbar.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Character.h">
       <Filter>includes</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>includes</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>includes</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterType.h">
+      <Filter>includes</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterTexturePack.h">
+      <Filter>includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Healthbar.h">
+      <Filter>includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TexturedObjectFragmentShader.fragmentshader" />
-    <None Include="TexturedObjectVertexShader.vertexshader" />
-    <None Include="HealthBarVertexShader.vertexshader" />
-    <None Include="HealthBarFragmentShader.fragmentshader" />
+    <None Include="TexturedObjectVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="TexturedObjectFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="HealthBarVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="HealthBarFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="assets">
@@ -51,9 +76,11 @@
     <Filter Include="src">
       <UniqueIdentifier>{f36de2d8-3ff8-4896-b353-e16771d2529c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{6b420059-a617-4540-bfaa-457389c21311}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\UpScene.png" />
     <Image Include="assets\projectiles\Bullet.png">
       <Filter>assets\projectiles</Filter>
     </Image>

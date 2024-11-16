@@ -13,21 +13,15 @@
 #include "shader.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "Healthbar.h"
 
 // GLFW window
 GLFWwindow* window;
-const int width = 1024, height = 1024;
+int width = 820, height = 820;
 
-// Global variables for player stats and movement
-//glm::vec3 character_scaling(0.12f, 0.36f, 1.0f);  // Adjust scale if needed
-//glm::vec3 player_position(0.0f, -0.5f, 0.0f);    // Starting position
-
-float delta_time = 0.0f;
-float last_frame_time = 0.0f;
-const float moving_speed = 2.0f;  // Increase speed for more visible movement
 
 // Shader program and texture IDs
-GLuint programID, backgroundTexture;
+GLuint texturesProgramID, backgroundTexture;
 
 // VAO, VBO, and IBO for background
 GLuint backgroundVAO, backgroundVBO, backgroundIBO;
@@ -35,6 +29,12 @@ GLuint backgroundVAO, backgroundVBO, backgroundIBO;
 // Global main character
 Character* mainCharacter;
 
+//All Scenes
+Scene* centerScene;
+Scene* northScene;
+Scene* southScene;
+Scene* westScene;
+Scene* eastScene;
 //Global scene
 Scene* scene;
 
@@ -43,79 +43,125 @@ Scene* scene;
 const glm::vec4 health_bar_background_color(0.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 health_bar_color(1.0f, 0.0f, 0.0f, 1.0f);
 
-int player_health = 50;
+//Rendering Animations with the same speed on all PCs
+float delta_time = 0.0f;
+float last_frame_time = 0.0f;
+const float moving_speed = .8f;  // Increase speed for more visible movement
+const float projectile_speed = 5.0f;
 
-// Function to load textures
-GLuint loadTexture(const char* filePath) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int texWidth, texHeight, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(filePath, &texWidth, &texHeight, &nrChannels, 0);
-    if (data) {
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, texWidth, texHeight, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "Failed to load texture: " << filePath << std::endl;
-    }
-    stbi_image_free(data);
-
-    return textureID;
-}
 
 // Callback for window resizing
 void window_callback(GLFWwindow* window, int new_width, int new_height) {
     glViewport(0, 0, new_width, new_height);
+    width = new_width;
+    height = new_height;
 }
 
 float x_offset = 0.0f;
 float y_offset = 0.0f;
 
-// Handle player movement input
-void handleKeyInput(GLFWwindow* window, Character* mainCharacter, Scene* scene) {
-    GLuint d_key = glfwGetKey(window, GLFW_KEY_D);
-    GLuint a_key = glfwGetKey(window, GLFW_KEY_A);
-    GLuint w_key = glfwGetKey(window, GLFW_KEY_W);
-    GLuint s_key = glfwGetKey(window, GLFW_KEY_S);
 
-    // Move left and right
+float computeOrientationAngle(int w_key, int a_key, int s_key, int d_key) {
+    //angles taken counter clockwise
+    if (w_key == GLFW_PRESS && d_key == GLFW_PRESS) {
+        return 315.0f; // Up-right
+    }
+    if (w_key == GLFW_PRESS && a_key == GLFW_PRESS) {
+        return 45.0f; // Up-left
+    }
+    if (s_key == GLFW_PRESS && d_key == GLFW_PRESS) {
+        return 225.0f; // Down-right
+    }
+    if (s_key == GLFW_PRESS && a_key == GLFW_PRESS) {
+        return 135.0f; // Down-left
+    }
+    if (w_key == GLFW_PRESS) {
+        return 0.0f; // Up
+    }
+    if (s_key == GLFW_PRESS) {
+        return 180.0f; // Down
+    }
+    if (d_key == GLFW_PRESS) {
+        return 270.0f; // Right
+    }
+    if (a_key == GLFW_PRESS) {
+        return 90.0f; // Left
+    }
+
+    // No keys pressed, keep the current orientation
+    return -1.0f; // Special case to indicate no change in orientation
+}
+
+
+
+// Handle player movement input
+void handleUserInput(GLFWwindow* window, float currentTime) {
+
+    //Close game when hitting escape
+    int escape_key = glfwGetKey(window, GLFW_KEY_ESCAPE);
+
+    if (escape_key == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, 1);
+    }
+
+    //Detecting clicks (for shooting)
+    int mouse_left_click = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+
+    if (mouse_left_click == GLFW_PRESS) {
+
+        
+    }
+
+    //Moving character
+    int d_key = glfwGetKey(window, GLFW_KEY_D);
+    int a_key = glfwGetKey(window, GLFW_KEY_A);
+    int w_key = glfwGetKey(window, GLFW_KEY_W);
+    int s_key = glfwGetKey(window, GLFW_KEY_S);
+
+    // Compute x and y offsets for movement based on keys
     if (d_key == GLFW_PRESS && a_key != GLFW_PRESS) {
         x_offset = moving_speed * delta_time;
+        mainCharacter->walking = true;
     }
     else if (a_key == GLFW_PRESS && d_key != GLFW_PRESS) {
         x_offset = -moving_speed * delta_time;
+        mainCharacter->walking = true;
     }
     else {
+        mainCharacter->walking = false;
+
         x_offset = 0.0f;
     }
 
-    // Move up or down
     if (w_key == GLFW_PRESS && s_key != GLFW_PRESS) {
         y_offset = moving_speed * delta_time;
+        mainCharacter->walking = true;
     }
     else if (s_key == GLFW_PRESS && w_key != GLFW_PRESS) {
         y_offset = -moving_speed * delta_time;
+        mainCharacter->walking = true;
     }
     else {
         y_offset = 0.0f;
     }
 
+    // Update the orientation angle based on user input
+    float angle = computeOrientationAngle(w_key, a_key, s_key, d_key);
+    if (angle != -1.0f) { // -1.0f indicates no change in orientation
+        mainCharacter->lookAngle = angle; // Convert to radians if needed
+    }
+
     // Update mainCharacter's position based on input
     mainCharacter->updatePosition(x_offset, y_offset);
-    /*mainCharacter->position.x += x_offset;
-    mainCharacter->position.y += y_offset;*/
+    Scene* tempScene = scene->constrainToBoundaries(*mainCharacter);
+    if (scene != tempScene) {
 
-    scene->constrainToBoundaries(*mainCharacter);
+        //Switch scenes
+        scene = tempScene;
+    }
 }
+
 
 int main(void) {
     // Initialize GLFW
@@ -152,175 +198,137 @@ int main(void) {
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // Load shaders and textures
-    programID = LoadShaders("TexturedObjectVertexShader.vertexshader", "TexturedObjectFragmentShader.fragmentshader");
-    GLuint healthBarProgramID = LoadShaders("HealthBarVertexShader.vertexshader", "HealthBarFragmentShader.fragmentshader");
-    //backgroundTexture = loadTexture("assets/MiddleScene.png");
+    texturesProgramID = LoadShaders("TexturedObjectVertexShader.vertexshader", "TexturedObjectFragmentShader.fragmentshader");
+    GLuint healthbarProgramID = LoadShaders("HealthbarVertexShader.vertexshader", "HealthbarFragmentShader.fragmentshader");
 
-    // Define boundaries for the scene
-    float boundaries[4] = { -0.9f, 0.9f, -0.72f, 0.72f };
-
-    // Define background vertices and indices
-    //float backgroundVertices[] = {
-    //    1.0f,  1.0f, 0.0f, 1.0f, 1.0f,  // top right
-    //    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-    //   -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
-    //   -1.0f,  1.0f, 0.0f, 0.0f, 1.0f   // top left
-    //};
 
     unsigned int backgroundIndices[] = { 0, 1, 3, 1, 2, 3 };
 
     unsigned int healthBarIndices[] = { 0, 1, 3, 1, 2, 3 };
 
-    // Setup VAOs, VBOs, and IBOs for background
-    /*glGenVertexArrays(1, &backgroundVAO);
-    glGenBuffers(1, &backgroundVBO);
-    glGenBuffers(1, &backgroundIBO);
 
-    glBindVertexArray(backgroundVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, backgroundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(backgroundVertices), backgroundVertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backgroundIndices), backgroundIndices, GL_STATIC_DRAW);
+    // Create main character (spawns in the south)
+    mainCharacter = new Character(CharacterType::Main, glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 0.0f, glfwGetTime(), false);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);*/
+    // Create enemies for each scene
+    Character* earthBoss = new Character(CharacterType::EarthBoss, glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 90.0f, glfwGetTime(), false);
+    Character* iceBoss = new Character(CharacterType::IceBoss, glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 270.0f, glfwGetTime(), false);
+    Character* lavaBoss = new Character(CharacterType::LavaBoss, glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(1.2f, 1.2f, 1.0f), 0.0f, glfwGetTime(), false);
 
-    // Initialize the main character
-    mainCharacter = new Character("assets/main_character/MainHoldingGun.png", 50, 10, glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f));
-    /*std::vector<Character> enemies = {
-        Character("assets/EnemyCharacter.png", 30, 5, glm::vec3(-0.3f, 0.3f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f)),
-        Character("assets/EnemyCharacter.png", 30, 5, glm::vec3(0.3f, -0.3f, 0.0f), glm::vec3(0.12f, 0.36f, 1.0f))
-    };*/
     std::vector<Character> enemies;
 
-    // Initialize the global scene with the background image, boundaries, main character, and enemies
-    scene = new Scene("assets/scenes/MiddleScene.png", boundaries, enemies);
+    //Initializing all scenes
 
-    // Health Bar Background setup
-    GLuint healthBarBackgroundVAO, healthBarBackgroundVBO, healthBarBackgroundIBO;
-    glGenVertexArrays(1, &healthBarBackgroundVAO);
-    glGenBuffers(1, &healthBarBackgroundVBO);
-    glGenBuffers(1, &healthBarBackgroundIBO);
-    float healthBarBackgroundVertices[] = {
-        -0.95f, 0.9f, 0.0f,  // top left
-        -0.95f, 0.85f, 0.0f, // bottom left
-        -0.45f, 0.85f, 0.0f, // bottom right
-        -0.45f, 0.9f, 0.0f   // top right
-    };
+    // Define normalized boundaries based on the reference:
+    // Format: {west, east, south, north}
+    float centerBoundaries[4] = { -1.4f, 1.4f, -1.4f, 1.4f };    // Center scene
+    float northBoundaries[4] = { -0.9f, 0.9f, -1.4f, 0.9f };     // North scene above center
+    float eastBoundaries[4] = { -1.4f, 0.9f, -0.9f, 0.9f };     // East scene to the right of center
+    float southBoundaries[4] = { -0.9f, 0.9f, -0.9f, 1.4f };   // South scene below center
+    float westBoundaries[4] = { -0.9f, 1.4f, -0.9f, 0.9f };   // West scene to the left of center
 
-    // Bind and buffer health bar background
-    glBindVertexArray(healthBarBackgroundVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, healthBarBackgroundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(healthBarBackgroundVertices), healthBarBackgroundVertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, healthBarBackgroundIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(backgroundIndices), backgroundIndices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
-    // Health Bar Foreground (Red) setup
-    GLuint healthBarForegroundVAO, healthBarForegroundVBO, healthBarForegroundIBO;
-    glGenVertexArrays(1, &healthBarForegroundVAO);
-    glGenBuffers(1, &healthBarForegroundVBO);
-    glGenBuffers(1, &healthBarForegroundIBO);
-    float healthBarForegroundVertices[] = {
-        -0.95f, 0.89f, 0.0f,
-        -0.95f, 0.86f, 0.0f,
-        -0.45f, 0.86f, 0.0f,
-        -0.45f, 0.89f, 0.0f
-    };
+    //Define normalized starting points (scene transition teleportation points) for each scene
+    // Format: {west, east, south, north}
+    float westStartingPoint = 0.9f;
+    float eastStartingPoint = -0.9f;
+    float southStartingPoint = 0.72;
+    float northStartingPoint = -0.72;
 
-    // Bind and buffer health bar foreground
-    glBindVertexArray(healthBarForegroundVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, healthBarForegroundVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(healthBarForegroundVertices), healthBarForegroundVertices, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, healthBarForegroundIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(healthBarIndices), healthBarIndices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    //Enemies vectors:
+    std::vector<Character> northEnemies = std::vector<Character>();
+    northEnemies.push_back(*lavaBoss);
+
+    std::vector<Character> westEnemies = std::vector<Character>();
+    westEnemies.push_back(*earthBoss);
+
+    std::vector<Character> eastEnemies = std::vector<Character>();
+    eastEnemies.push_back(*iceBoss);
+
+    // Create five scenes with their respective background images and boundaries
+    centerScene = new Scene("assets/scenes/MiddleScene.png", centerBoundaries, std::vector<Character>());
+    northScene = new Scene("assets/scenes/NorthScene.png", northBoundaries, northEnemies);
+    eastScene = new Scene("assets/scenes/EastScene.png", eastBoundaries, eastEnemies);
+    southScene = new Scene("assets/scenes/SouthScene.png", southBoundaries, std::vector<Character>());
+    westScene = new Scene("assets/scenes/WestScene.png", westBoundaries, westEnemies);
+
+    // Set neighbors for each scene
+    centerScene->setNeighbors(westScene, eastScene, southScene, northScene);
+    northScene->setNeighbors(nullptr, nullptr, centerScene, nullptr);  // Only south neighbor
+    eastScene->setNeighbors(centerScene, nullptr, nullptr, nullptr);   // Only west neighbor
+    southScene->setNeighbors(nullptr, nullptr, nullptr, centerScene);  // Only north neighbor
+    westScene->setNeighbors(nullptr, centerScene, nullptr, nullptr);   // Only east neighbor
+
+    //Set starting points for each scene
+    centerScene->setStartingPoints(&westStartingPoint, &eastStartingPoint, &southStartingPoint, &northStartingPoint);
+    westScene->setStartingPoints(&westStartingPoint, nullptr, nullptr, nullptr);
+    eastScene->setStartingPoints(nullptr, &eastStartingPoint, nullptr, nullptr);
+    southScene->setStartingPoints(nullptr, nullptr, &southStartingPoint, nullptr);
+    northScene->setStartingPoints(nullptr, nullptr, nullptr, &northStartingPoint);
+
+
+    //Starting scene
+    scene = southScene;
+
+    //Healthbar setup
+    HealthBar* healthBar = new HealthBar(glm::vec3(-0.9f, 0.9f, 0.0f), glm::vec2(0.5f, 0.05f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+    // Update health bar ratio
+    healthBar->update(mainCharacter->health / 100.0f);
+
+    // Render health bar
+    healthBar->render(healthbarProgramID);
+
+
 
     glfwSetFramebufferSizeCallback(window, window_callback);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
 
         // Calculate delta time
-        float current_frame_time = glfwGetTime();
+        float current_frame_time = (float)glfwGetTime();
         delta_time = current_frame_time - last_frame_time;
         last_frame_time = current_frame_time;
 
         // Poll events and swap buffers
         glfwPollEvents();
         glfwSwapBuffers(window);
+        glfwSwapInterval(1); // Enable VSync to synchronize with monitor's refresh rate
 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Handle player input
-        handleKeyInput(window, mainCharacter, scene);
+        handleUserInput(window, current_frame_time);
 
-        // Render Background
-        /*glUseProgram(programID);
-        glUniform1i(glGetUniformLocation(programID, "texture1"), 0);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-        glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-        glBindVertexArray(backgroundVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
+        scene->render(texturesProgramID, current_frame_time, *mainCharacter, delta_time);
+        mainCharacter->render(texturesProgramID, current_frame_time); // Render the character with the shader program
 
-        // Render the Main Character with updated position
-        //glm::mat4 characterTransform = glm::translate(glm::mat4(1.0f), player_position);
-        //characterTransform = glm::scale(characterTransform, character_scaling);
+        // Update health bar ratio
+        healthBar->update(mainCharacter->health / 100.0f);
 
-        // Apply transformation matrix for the character
-        //glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(characterTransform));
-        scene->render(programID);
-        mainCharacter->render(programID); // Render the character with the shader program
-        // Render Health Bar Background (black rectangle)
-        glUseProgram(healthBarProgramID);
-        unsigned int health_bar_color_loc = glGetUniformLocation(healthBarProgramID, "healthBarColor");
+        // Render health bar
+        healthBar->render(healthbarProgramID);
 
-        // Render health bar background
-        glUseProgram(healthBarProgramID);
-        glUniform4fv(health_bar_color_loc, 1, glm::value_ptr(health_bar_background_color));
-        glBindVertexArray(healthBarBackgroundVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        // Update and render health bar foreground
-        float health_ratio = player_health / 100.0f;
-        healthBarForegroundVertices[6] = -0.95f + health_ratio * 0.5f;  // Dynamic width
-        healthBarForegroundVertices[9] = -0.95f + health_ratio * 0.5f;  // Dynamic width
-
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(healthBarForegroundVertices), healthBarForegroundVertices);
-        glUniform4fv(health_bar_color_loc, 1, glm::value_ptr(health_bar_color));
-        glBindVertexArray(healthBarForegroundVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        // Unbind the health bar VAO after rendering both background and foreground
-        glBindVertexArray(0);
     }
 
     // Cleanup
-    // Free the dynamically allocated main character
-
-    scene->cleanup();
-    mainCharacter->cleanup();
-
-    delete scene;
+    // Free the dynamically allocated objects
+    delete healthBar;
+    delete northScene;
+    delete southScene;
+    delete eastScene;
+    delete westScene;
+    delete centerScene;
     delete mainCharacter;
-    glDeleteBuffers(1, &healthBarBackgroundVBO);
-    glDeleteBuffers(1, &healthBarForegroundVBO);
-    glDeleteBuffers(1, &healthBarBackgroundIBO);
-    glDeleteBuffers(1, &healthBarForegroundIBO);
-    glDeleteVertexArrays(1, &healthBarBackgroundVAO);
-    glDeleteVertexArrays(1, &healthBarForegroundVAO);
 
-    glDeleteProgram(programID);
+    glDeleteProgram(texturesProgramID);
     glfwTerminate();
 
     return 0;

@@ -1,26 +1,55 @@
-// Character.cpp
-
 #include "Character.h"
 #include "dependente/glm/gtc/matrix_transform.hpp"
 #include "dependente/glm/gtc/type_ptr.hpp"
 #include "stb_image.h"
 #include <iostream>
 
-Character::Character(const std::string& texturePath, int health, int damage, glm::vec3 position, glm::vec3 scaling)
-    : health(health), damage(damage), position(position), scaling(scaling) {
-    textureID = loadTexture(texturePath.c_str());
+Character::Character(
+    CharacterType characterType,
+    glm::vec3 position,
+    glm::vec3 scaling,
+    float lookAngle,
+    float startingTime,
+    bool walking
+) : characterType(characterType), position(position), scaling(scaling), lookAngle(lookAngle), startingTime(startingTime), walking(walking), lastShotTime(startingTime) {
+    // Load character attributes based on type
+    CharacterAttributes attributes = getEnemyAttributes(characterType);
+    health = attributes.maxHealth;
+    
+    texturePack = attributes.texturePack;
+    movementAxis = attributes.movementAxis;
+    // Load textures once
+    idleTextureID = loadTexture(texturePack.idleTexturePath.c_str());
+    gunHoldingTextureID = loadTexture(texturePack.gunHoldingTexturePath.c_str());
+    for (const auto& path : texturePack.walkingTexturesPaths) {
+        walkingTextureIDs.push_back(loadTexture(path.c_str()));
+    }
+
     setupCharacter();
 }
 
-void Character::render(GLuint programID) {
+void Character::render(GLuint programID, float time) {
+    GLuint currentTextureID;
+
+    // Alternate between walking textures if moving
+    if (walking && !walkingTextureIDs.empty()) {
+        int textureIndex = static_cast<int>(time * 5) % walkingTextureIDs.size();
+        currentTextureID = walkingTextureIDs[textureIndex];
+    }
+    else {
+        currentTextureID = idleTextureID;
+    }
+
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, position);
+    transform = glm::rotate(transform, lookAngle, glm::vec3(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, scaling);
+
 
     glUseProgram(programID);
     glUniform1i(glGetUniformLocation(programID, "texture1"), 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, currentTextureID);
     glUniformMatrix4fv(glGetUniformLocation(programID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     glBindVertexArray(VAO);
@@ -33,13 +62,31 @@ void Character::updatePosition(float x_offset, float y_offset) {
     position.y += y_offset;
 }
 
+void Character::enemyMovement(float time, glm::vec3& target, float deltaTime) {
+    float movementRange = 0.8f;
+    float speed = 0.5f;
+
+    if (movementAxis == 'x') {
+        position.x = movementRange * sin(speed * time);
+    }
+    else {
+        position.y = movementRange * sin(speed * time);
+
+    }
+
+    if (fmod(time, 2.0f) < 0.01f) {
+    }
+}
+
+
+
+
 void Character::setupCharacter() {
-    // Vertex data for character
     float characterVertices[] = {
-        0.5f,  0.25f, 0.0f,  1.0f, 1.0f,  // top right
-        0.5f, -0.25f, 0.0f,  1.0f, 0.0f,  // bottom right
-       -0.5f, -0.25f, 0.0f,  0.0f, 0.0f,  // bottom left
-       -0.5f,  0.25f, 0.0f,  0.0f, 1.0f   // top left
+        0.25f,  0.45f, 0.0f,  1.0f, 1.0f,
+        0.25f, -0.45f, 0.0f,  1.0f, 0.0f,
+       -0.25f, -0.45f, 0.0f,  0.0f, 0.0f,
+       -0.25f,  0.45f, 0.0f,  0.0f, 1.0f
     };
 
     unsigned int characterIndices[] = { 0, 1, 3, 1, 2, 3 };
@@ -54,18 +101,18 @@ void Character::setupCharacter() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(characterIndices), characterIndices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // Positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // Texture Coords
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glBindVertexArray(0); // Unbind VAO
+    glBindVertexArray(0);
 }
 
 GLuint Character::loadTexture(const char* filePath) {
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -85,23 +132,26 @@ GLuint Character::loadTexture(const char* filePath) {
     }
     stbi_image_free(data);
 
-    return textureID;
+    return texture;
 }
 
-void Character::cleanup() {
-    // Delete buffers and textures for background
+Character::~Character() {
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &IBO);
     glDeleteVertexArrays(1, &VAO);
-    glDeleteTextures(1, &textureID);
+
+    // Delete preloaded textures
+    glDeleteTextures(1, &idleTextureID);
+    glDeleteTextures(1, &gunHoldingTextureID);
+    for (auto& texID : walkingTextureIDs) {
+        glDeleteTextures(1, &texID);
+    }
 }
 
-// Getter function for position
 glm::vec3 Character::getPosition() const {
     return position;
 }
 
-// Setter function for position
 void Character::setPosition(const glm::vec3& newPosition) {
     position = newPosition;
 }

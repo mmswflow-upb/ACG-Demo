@@ -1,12 +1,12 @@
 #version 330 core
 
 // Ouput data
-out vec4 fragColor;
+out vec4 healthbarFragColor;
 
-uniform vec4 healthBarColor;
+uniform vec4 healthbarColor;
 
 void main()
 {
-	fragColor = healthBarColor;
+	healthbarFragColor = healthbarColor;
 
 }
