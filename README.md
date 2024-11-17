@@ -14,8 +14,9 @@ In 2024, an unprecedented catastrophe strikes humanity: people begin transformin
 
 ### Gameplay
 
-- W-A-S-D for movement
-- Left click to shoot (there's a delay for the player ~1.5 seconds)
+- W-A-S-D for movement, the map has 5 scenes in the shape of a cross
+- At the start you spawn in the southern scene and you have to travel north to get to the middle one and then you can move west, north, east to find the bosses
+- Left click to shoot (there's a delay for the player ~1 second)
 - While holding the gun, player can't move
 
 ### Tasks Distribution
