@@ -1,73 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterTexturePack.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Projectile.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Healthbar.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Character.h">
+    <ClInclude Include="includes\Character.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="includes\CharacterTexturePack.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterTexturePack.h">
+    <ClInclude Include="includes\CharacterType.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
+    <ClInclude Include="includes\Healthbar.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectileType.h">
+    <ClInclude Include="includes\Projectile.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterType.h">
+    <ClInclude Include="includes\ProjectileType.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="Healthbar.h">
+    <ClInclude Include="includes\Scene.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
+    <ClInclude Include="includes\shader.hpp">
       <Filter>include</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TexturedObjectFragmentShader.fragmentshader">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="TexturedObjectVertexShader.vertexshader">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="ProjectilesVertexShader.vertexshader">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="ProjectilesFragmentShader.fragmentshader">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="HealthbarVertexShader.vertexshader">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="HealthbarFragmentShader.fragmentshader">
-      <Filter>shaders</Filter>
-    </None>
+    <ClInclude Include="includes\stb_image.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="assets">
@@ -141,5 +101,48 @@
     <Image Include="assets\projectiles\Bullet.png">
       <Filter>assets\projectiles</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Character.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CharacterTexturePack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Healthbar.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Projectile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\HealthBarFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\HealthBarVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ProjectilesFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\ProjectilesVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\TexturedObjectFragmentShader.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\TexturedObjectVertexShader.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
