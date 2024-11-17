@@ -143,15 +143,16 @@ void Scene::render(GLuint texturesProgramID, GLuint projectilesProgramID, float 
             bool enemyHit = false; // Flag to track if any enemy is hit
             for (auto enemy = enemies.begin(); enemy != enemies.end(); ++enemy) {
                 if (isProjectileCollidingWithCharacter((*it)->position, *enemy)) {
-                    if (enemy->health - (*it)->damage >= 0) {
+                    if (enemy->health - (*it)->damage > 0) {
                         enemy->health -= (*it)->damage; //Subtract health from enemy when hit by bullets
+                        std::cout << "Enemy health: " << enemy->health << "\n";
+
                     }
                     else {
                         enemy->health = 0;
                         std::cout << "Enemy defeated\n";
                         enemies.erase(enemy); // Remove enemy from the scene if defeated
                     }
-                   
 
                     delete* it;
                     it = projectiles.erase(it); // Remove projectile after it hits an enemy

@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}|lab_TGIP_1.vcxproj|C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Scene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}|lab_TGIP_1.vcxproj|solutionrelative:src\\Scene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}|lab_TGIP_1.vcxproj|C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Character.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{E8D7D48F-7AB1-4260-BCEC-8CC11D9FBC01}|lab_TGIP_1.vcxproj|solutionrelative:src\\Character.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +18,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Scene.cpp",
+              "DocumentMoniker": "C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Scene.cpp",
+              "RelativeDocumentMoniker": "src\\Scene.cpp",
+              "ToolTip": "C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Scene.cpp",
+              "RelativeToolTip": "src\\Scene.cpp",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAJQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-11-17T14:20:24.804Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Character.cpp",
+              "DocumentMoniker": "C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Character.cpp",
+              "RelativeDocumentMoniker": "src\\Character.cpp",
+              "ToolTip": "C:\\Users\\Mario Sakka\\Documents\\ACG-Demo\\src\\Character.cpp",
+              "RelativeToolTip": "src\\Character.cpp",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAEYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-11-17T14:19:43.077Z",
+              "EditorCaption": ""
             }
           ]
         }
