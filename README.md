@@ -1,5 +1,5 @@
 # 👩🏻‍🦰 Red Evil: The Laylasaurus Quest 🦖🧕 - 2D Demo
-Advanced Computer Graphics Project (in OpenGL) - Year III Sem I
+Advanced Computer Graphics Project in **OpenGL** - Year III Sem I
 
 ### Authors 
 - Sakka Mohamad-Mario 1231EB 🚶
@@ -12,7 +12,7 @@ In 2024, an unprecedented catastrophe strikes humanity: people begin transformin
 
 ### Gameplay
 
-- WASD for movement
+- W-A-S-D for movement
 - Left click to shoot (there's a delay for the player ~1.5 seconds)
 - While holding the gun, player can't move
 
@@ -22,3 +22,29 @@ In 2024, an unprecedented catastrophe strikes humanity: people begin transformin
 - Zafar Azzam: Implemented the rendering of 2D textures, simplified creation of characters and scenes by writing classes for them
 - Al-Khalidy Essam: Implemented shooting projectiles , destroying obstacles & damage system
 - Mirghani Mahmoud: Created assets, poster & story, implemented collisions
+
+### Technical Details
+
+- Shooting System: We use the cursor's position on the window to determine the target of the projectiles, we first have to get their positions in pixels then compute the normalized coordinates
+
+```cpp
+// Get the normalized coordinates of the cursor on the window
+float x_normalized = ((2.0f * xpos) / width) - 1.0f;
+float y_normalized = 1.0f - ((2.0f * ypos) / height);
+
+// Create target vector to which the projectile has to travel
+glm::vec3 target(x_normalized, y_normalized, 0.0f);
+```
+
+- Collision System: This system uses Axis-Aligned Bounding Box (AABB) collision detection to determine if a projectile collides with a character. Each character type has a predefined rectangular hitbox aligned with the coordinate axes, defined by boundaries (left, right, top, bottom) based on its position and dimensions. There's a function named `isProjectileCollidingWithCharacter` which is called every frame when the current scene is rendered, and it checks whether the position of the projectile is inside the bounding boxes of characters, each character type has its own bounding box
+
+```cpp
+// Check if projectile is within the hitbox boundaries
+return (projectilePosition.x > left && projectilePosition.x < right &&
+    projectilePosition.y > bottom && projectilePosition.y < top);
+```
+
+- Damage System: When collision is detected, damage is applied to the character that was hit, and the projectile is deleted so it doesnt persist in order to hit multiple targets
+
+- Movement System: Pressing any of the WASD keys or combos of them changes the orientation of the rectangle on which the main character is drawn. We apply a rotation matrix before translating the character's rectangle that rotates it by a computed angle. This computed angle is given by the function `computeOrientationAngle` (counterclockwise), which returns an angle based on the detected combos of pressed keys. By default the angle at which the character's rectangle is rotated is zero, making it face upwards
+
