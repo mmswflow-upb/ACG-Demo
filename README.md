@@ -21,10 +21,10 @@ In 2024, an unprecedented catastrophe strikes humanity: people begin transformin
 
 ### Tasks Distribution
 
-- Sakka Mohamad-Mario: Implemented rendering of characters (NPC & Main), implemented movemement & scene transitions, improved character and scene classes
+- Sakka Mohamad-Mario: Implemented rendering of characters (NPC & Main), implemented movemement & scene transitions, improved character and scene classes, cleaned code at the end
 - Zafar Azzam: Implemented the rendering of 2D textures, simplified creation of characters and scenes by writing classes for them
-- Al-Khalidy Essam: Implemented shooting projectiles , destroying obstacles & damage system
-- Mirghani Mahmoud: Created assets, poster & story, implemented collisions
+- Al-Khalidy Essam: Implemented shooting projectiles , collisions & damage system
+- Mirghani Mahmoud: Created assets, poster & story
 
 ### Technical Details
 
