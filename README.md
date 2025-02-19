@@ -1,5 +1,4 @@
 # 👩🏻‍🦰 Red Evil: The Laylasaurus Quest 🦖🧕 - 2D Demo
-
 ![poster](Poster.jpg)
 
 
@@ -119,6 +118,7 @@ inline ProjectileAttributes getProjectileAttributes(ProjectileType type) {
 ```
 
 ## Technical Details
+- This game is built directly on OpenGL and implements its own game engine, the textures are loaded using the `stb_image.h` from the [STB library](https://github.com/nothings/stb.git)
 
 - Shooting System: We use the cursor's position on the window to determine the target of the projectiles, we first have to get their positions in pixels then compute the normalized coordinates
 
