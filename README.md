@@ -18,6 +18,7 @@ In 2024, an unprecedented catastrophe strikes humanity: people begin transformin
 - At the start you spawn in the southern scene and you have to travel north to get to the middle one and then you can move west, north, east to find the bosses
 - Left click to shoot (there's a delay for the player ~1 second)
 - While holding the gun, player can't move
+- [Gameplay Video](https://www.youtube.com/watch?v=3qEAZw01-Ew&list=PLf34LpXku6i9rz5etayFc05nwu3NNGW3M)
 
 ### Tasks Distribution
 

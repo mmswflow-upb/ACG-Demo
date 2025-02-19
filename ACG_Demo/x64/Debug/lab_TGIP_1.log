@@ -1,0 +1,105 @@
+﻿          1 file(s) copied.
+          1 file(s) copied.
+  Character.cpp
+  CharacterTexturePack.cpp
+  Healthbar.cpp
+  main.cpp
+C:\Users\Mario Sakka\Documents\ACG-Demo\src\main.cpp(128,32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\src\main.cpp(129,32): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Mario Sakka\Documents\ACG-Demo\src\main.cpp(271,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Mario Sakka\Documents\ACG-Demo\src\main.cpp(272,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Projectile.cpp
+  Scene.cpp
+  shader.cpp
+  Generating Code...
+Character.obj : error LNK2019: unresolved external symbol __imp___glewActiveTexture referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewActiveTexture
+Character.obj : error LNK2019: unresolved external symbol __imp___glewBindBuffer referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
+Character.obj : error LNK2019: unresolved external symbol __imp___glewBufferData referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
+Character.obj : error LNK2019: unresolved external symbol __imp___glewDeleteBuffers referenced in function "public: __cdecl Character::~Character(void)" (??1Character@@QEAA@XZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewDeleteBuffers
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewDeleteBuffers
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewDeleteBuffers
+Character.obj : error LNK2019: unresolved external symbol __imp___glewGenBuffers referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewGenBuffers
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewGenBuffers
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewGenBuffers
+Character.obj : error LNK2019: unresolved external symbol __imp___glewEnableVertexAttribArray referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewEnableVertexAttribArray
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewEnableVertexAttribArray
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewEnableVertexAttribArray
+Character.obj : error LNK2019: unresolved external symbol __imp___glewGetUniformLocation referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewGetUniformLocation
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewGetUniformLocation
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewGetUniformLocation
+Character.obj : error LNK2019: unresolved external symbol __imp___glewUniform1i referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewUniform1i
+Character.obj : error LNK2019: unresolved external symbol __imp___glewUniformMatrix4fv referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewUniformMatrix4fv
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewUniformMatrix4fv
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewUniformMatrix4fv
+Character.obj : error LNK2019: unresolved external symbol __imp___glewUseProgram referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewUseProgram
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewUseProgram
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewUseProgram
+Character.obj : error LNK2019: unresolved external symbol __imp___glewVertexAttribPointer referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewVertexAttribPointer
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewVertexAttribPointer
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewVertexAttribPointer
+Character.obj : error LNK2019: unresolved external symbol __imp___glewGenerateMipmap referenced in function "private: unsigned int __cdecl Character::loadTexture(char const *)" (?loadTexture@Character@@AEAAIPEBD@Z)
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewGenerateMipmap
+Character.obj : error LNK2019: unresolved external symbol __imp___glewBindVertexArray referenced in function "public: void __cdecl Character::render(unsigned int,float)" (?render@Character@@QEAAXIM@Z)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewBindVertexArray
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewBindVertexArray
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewBindVertexArray
+Character.obj : error LNK2019: unresolved external symbol __imp___glewDeleteVertexArrays referenced in function "public: __cdecl Character::~Character(void)" (??1Character@@QEAA@XZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewDeleteVertexArrays
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewDeleteVertexArrays
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewDeleteVertexArrays
+Character.obj : error LNK2019: unresolved external symbol __imp___glewGenVertexArrays referenced in function "private: void __cdecl Character::setupCharacter(void)" (?setupCharacter@Character@@AEAAXXZ)
+Healthbar.obj : error LNK2001: unresolved external symbol __imp___glewGenVertexArrays
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewGenVertexArrays
+Scene.obj : error LNK2001: unresolved external symbol __imp___glewGenVertexArrays
+Healthbar.obj : error LNK2019: unresolved external symbol __imp___glewBufferSubData referenced in function "public: void __cdecl HealthBar::update(float)" (?update@HealthBar@@QEAAXM@Z)
+Healthbar.obj : error LNK2019: unresolved external symbol __imp___glewUniform4fv referenced in function "public: void __cdecl HealthBar::render(unsigned int)" (?render@HealthBar@@QEAAXI@Z)
+Projectile.obj : error LNK2001: unresolved external symbol __imp___glewUniform4fv
+main.obj : error LNK2019: unresolved external symbol __imp_glewInit referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwInit referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwTerminate referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwCreateWindow referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwWindowShouldClose referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwSetWindowShouldClose referenced in function "void __cdecl handleUserInput(struct GLFWwindow *,float)" (?handleUserInput@@YAXPEAUGLFWwindow@@M@Z)
+main.obj : error LNK2019: unresolved external symbol glfwSetFramebufferSizeCallback referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwPollEvents referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwSetInputMode referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwGetKey referenced in function "void __cdecl handleUserInput(struct GLFWwindow *,float)" (?handleUserInput@@YAXPEAUGLFWwindow@@M@Z)
+main.obj : error LNK2019: unresolved external symbol glfwGetMouseButton referenced in function "void __cdecl handleUserInput(struct GLFWwindow *,float)" (?handleUserInput@@YAXPEAUGLFWwindow@@M@Z)
+main.obj : error LNK2019: unresolved external symbol glfwGetCursorPos referenced in function "void __cdecl handleUserInput(struct GLFWwindow *,float)" (?handleUserInput@@YAXPEAUGLFWwindow@@M@Z)
+main.obj : error LNK2019: unresolved external symbol glfwGetTime referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwMakeContextCurrent referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwSwapBuffers referenced in function main
+main.obj : error LNK2019: unresolved external symbol glfwSwapInterval referenced in function main
+main.obj : error LNK2019: unresolved external symbol __imp___glewDeleteProgram referenced in function main
+main.obj : error LNK2019: unresolved external symbol __imp_glewExperimental referenced in function main
+shader.obj : error LNK2019: unresolved external symbol __imp___glewAttachShader referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewCompileShader referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewCreateProgram referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewCreateShader referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewDeleteShader referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewDetachShader referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewGetProgramInfoLog referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewGetProgramiv referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewGetShaderInfoLog referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewGetShaderiv referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewLinkProgram referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+shader.obj : error LNK2019: unresolved external symbol __imp___glewShaderSource referenced in function "unsigned int __cdecl LoadShaders(char const *,char const *)" (?LoadShaders@@YAIPEBD0@Z)
+dependente\freeglut\freeglut.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+dependente\glew\glew32.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+dependente\glfw\glfw3.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\Mario Sakka\Documents\ACG-Demo\x64\Debug\ACG_Demo.exe : fatal error LNK1120: 47 unresolved externals

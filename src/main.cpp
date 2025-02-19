@@ -119,10 +119,10 @@ void handleUserInput(GLFWwindow* window, float currentTime) {
 
         // Check if enough time has passed since the last shot based on the fire rate (debounce)
         if (mainCharacter->lastShotTime >= mainCharacter->fireRate) {
+            
             // Get the position of the cursor on the window
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
-
 
             // Get the normalized coordinates of the cursor on the window
             float x_normalized = ((2.0f * xpos) / width) - 1.0f;
@@ -203,7 +203,7 @@ int main(void) {
     }
 
     // Create window
-    window = glfwCreateWindow(width, height, "Textured Scene with Character and Health Bar", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Red Evil: The Laylasaurus Quest", NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.");
         getchar();
@@ -343,9 +343,6 @@ int main(void) {
 
         //Render main character after detecting collisions, moving enemies, making enemies shoot projectiles, etc
         mainCharacter->render(texturesProgramID, delta_time); // Render the character with the shader program
-
-        // Update health bar ratio
-        healthBar->update(mainCharacter->health / 100.0f);
 
         // Render health bar after all attacks (if they exist) were found and processed
         healthBar->render(healthbarProgramID);
